@@ -21,7 +21,7 @@ import { useState, useEffect } from 'react';
 
 const PopupContent = () => (
   <>
-    <DialogHeader className="p-6 pb-2 border-b text-left">
+    <DialogHeader className="p-6 pb-2 border-b border-card-foreground/10 text-left">
       <DialogTitle>Chat Konsultasi</DialogTitle>
       <DialogDescription>
         Ajukan pertanyaan terkait kesehatan. Asisten AI akan membantu memberikan informasi umum dan mencatat data pasien.
@@ -61,7 +61,7 @@ export function ChatPopup() {
         <SheetTrigger asChild>
           {TriggerButton}
         </SheetTrigger>
-        <SheetContent side="bottom" className="h-[90dvh] p-0 flex flex-col">
+        <SheetContent side="bottom" className="h-[90dvh] p-0 flex flex-col bg-card/80 dark:bg-card/60 backdrop-blur-xl border-t border-card-foreground/10">
           <PopupContent />
         </SheetContent>
       </Sheet>
@@ -73,7 +73,7 @@ export function ChatPopup() {
       <DialogTrigger asChild>
         {TriggerButton}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md md:max-w-lg flex flex-col h-[80vh] max-h-[700px] p-0">
+      <DialogContent className="sm:max-w-md md:max-w-lg flex flex-col h-[80vh] max-h-[700px] p-0 bg-card/80 dark:bg-card/60 backdrop-blur-xl border-card-foreground/10 shadow-2xl">
         <PopupContent />
       </DialogContent>
     </Dialog>

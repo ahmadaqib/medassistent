@@ -24,7 +24,7 @@ const mockPatients = [
 
 export function PatientList() {
     return (
-        <Card className="shadow-lg">
+        <Card className="bg-card/60 dark:bg-card/40 backdrop-blur-xl border border-card-foreground/10 shadow-2xl">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <Users className="h-6 w-6" />
@@ -37,7 +37,7 @@ export function PatientList() {
             <CardContent>
                 <Table>
                     <TableHeader>
-                        <TableRow>
+                        <TableRow className="border-card-foreground/10">
                             <TableHead>ID Pasien</TableHead>
                             <TableHead>Nama</TableHead>
                             <TableHead>Usia</TableHead>
@@ -47,7 +47,7 @@ export function PatientList() {
                     </TableHeader>
                     <TableBody>
                         {mockPatients.map((patient) => (
-                             <TableRow key={patient.id}>
+                             <TableRow key={patient.id} className="border-card-foreground/10">
                                 <TableCell className="font-mono text-xs">{patient.id}</TableCell>
                                 <TableCell className="font-medium">{patient.name}</TableCell>
                                 <TableCell>{patient.age}</TableCell>

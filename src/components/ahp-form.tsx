@@ -139,12 +139,12 @@ export function AHPForm() {
     };
     
     return (
-        <Card className="shadow-lg">
+        <Card className="bg-card/60 dark:bg-card/40 backdrop-blur-xl border border-card-foreground/10 shadow-2xl">
             <CardContent className="p-6 md:p-8">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
                     {/* LEFT COLUMN: INPUTS */}
                     <div className="space-y-6">
-                        <Card>
+                        <Card className="bg-background/30 border-card-foreground/10">
                             <CardHeader>
                                 <CardTitle className="text-xl">Ekstraksi Data AI</CardTitle>
                                 <CardDescription>
@@ -158,6 +158,7 @@ export function AHPForm() {
                                     onChange={(e) => setPatientNotes(e.target.value)}
                                     rows={5}
                                     disabled={isExtracting}
+                                    className="bg-background/70"
                                 />
                                 <Button onClick={handleAnalyzeWithAI} disabled={isExtracting || !patientNotes.trim()} className="w-full">
                                     {isExtracting ? (
@@ -181,7 +182,7 @@ export function AHPForm() {
                             </div>
                         </div>
 
-                        <Separator className="my-6" />
+                        <Separator className="my-6 bg-card-foreground/10" />
 
                         <div>
                              <div className="flex items-center justify-between mb-4">
@@ -200,7 +201,7 @@ export function AHPForm() {
                     </div>
 
                     {/* RIGHT COLUMN: RESULTS */}
-                    <div className="bg-muted/50 rounded-lg p-6 flex flex-col justify-center items-center min-h-[300px] lg:min-h-full">
+                    <div className="bg-background/30 border-card-foreground/10 rounded-lg p-6 flex flex-col justify-center items-center min-h-[300px] lg:min-h-full">
                         {status === 'idle' && (
                             <div className="text-center text-muted-foreground">
                                 <Info className="mx-auto h-12 w-12 mb-4"/>
@@ -228,7 +229,7 @@ export function AHPForm() {
                                 <div className="text-6xl font-bold text-foreground">{result.score}<span className="text-2xl text-muted-foreground">/100</span></div>
                                 <p className="text-muted-foreground font-medium mb-6">Skor Kesesuaian Keseluruhan</p>
                                 
-                                <Card className="text-left bg-background/70">
+                                <Card className="text-left bg-transparent border-0 shadow-none">
                                     <CardHeader>
                                         <CardTitle className="flex items-center gap-2 text-base">
                                             <Lightbulb className="h-5 w-5 text-primary"/>
@@ -244,7 +245,7 @@ export function AHPForm() {
                     </div>
                 </div>
             </CardContent>
-            <CardFooter className="bg-muted p-6 border-t">
+            <CardFooter className="bg-black/5 dark:bg-white/5 p-6 border-t border-card-foreground/10">
                 <Button size="lg" onClick={handleCalculate} disabled={status === 'loading'} className="w-full sm:w-auto">
                     {status === 'loading' ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Menghitung...</> : 'Hitung Rekomendasi'}
                 </Button>
