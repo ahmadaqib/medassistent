@@ -222,7 +222,7 @@ export function AHPForm() {
                         )}
                         {status === 'success' && result && (
                             <div className="text-center w-full animate-in fade-in">
-                                <Badge variant={result.recommendation === 'Kemungkinan Dirujuk' ? 'default' : 'destructive'} className={`text-lg px-4 py-1 mb-4 ${result.recommendation === 'Kemungkinan Dirujuk' ? 'bg-green-100 text-green-800 border-green-200' : 'bg-red-100 text-red-800 border-red-200'}`}>
+                                <Badge variant={result.recommendation === 'Kemungkinan Dirujuk' ? 'default' : 'destructive'} className="text-lg px-4 py-1 mb-4">
                                     {result.recommendation}
                                 </Badge>
                                 <div className="text-6xl font-bold text-foreground">{result.score}<span className="text-2xl text-muted-foreground">/100</span></div>

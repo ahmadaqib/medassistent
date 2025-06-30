@@ -29,11 +29,11 @@ export default function Home() {
               <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
                   Tingkatkan efisiensi klinis dengan alat bantu AI untuk analisis rujukan pasien, pencatatan data, dan konsultasi cerdas.
               </p>
-              <div className="mt-8 flex justify-center gap-4">
-                  <Button size="lg" asChild>
+              <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <Button size="lg" asChild className="w-full sm:w-auto">
                       <a href="#referral-advisor">Mulai Analisis Rujukan</a>
                   </Button>
-                  <Button size="lg" variant="outline">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto">
                       Jadwalkan Demo
                   </Button>
               </div>
@@ -43,12 +43,12 @@ export default function Home() {
         <section id="referral-advisor" className="py-16 sm:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <Tabs defaultValue="ahp-advisor" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto mb-10">
-                <TabsTrigger value="ahp-advisor">
+              <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 max-w-md mx-auto mb-10 h-auto sm:h-10">
+                <TabsTrigger value="ahp-advisor" className="py-2 sm:py-1.5">
                   <FileText className="mr-2 h-4 w-4" />
                   Penasihat Rujukan AHP
                 </TabsTrigger>
-                <TabsTrigger value="patient-list">
+                <TabsTrigger value="patient-list" className="py-2 sm:py-1.5">
                   <Users className="mr-2 h-4 w-4" />
                   Daftar Pasien
                 </TabsTrigger>
