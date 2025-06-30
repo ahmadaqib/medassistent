@@ -63,10 +63,15 @@ export function ChatConsultation() {
             <ScrollArea className="flex-1 pr-4 -mr-4" viewportRef={scrollViewportRef}>
                 <div className="space-y-4">
                     {messages.length === 0 && (
-                        <div className="flex h-full flex-col items-center justify-center text-muted-foreground pt-16 text-center">
-                            <Bot className="h-12 w-12 mb-4" />
-                            <h3 className="font-semibold">Selamat Datang!</h3>
-                            <p className="text-sm">Mulai percakapan dengan mengajukan pertanyaan di bawah ini.</p>
+                        <div className="flex h-full flex-col items-center justify-center text-muted-foreground pt-8 text-center">
+                            <Bot className="h-10 w-10 mb-4" />
+                            <h3 className="font-semibold text-lg">Selamat Datang!</h3>
+                            <p className="text-sm whitespace-pre-wrap text-left bg-muted p-4 rounded-md mt-4">
+                                {"Saya adalah asisten AI medis Anda. Anda dapat:\n\n1. **Bertanya tentang informasi medis umum.**\n2. **Mencatat data pasien baru.**\n   Contoh: 'Tolong catat pasien Budi, 45 th, keluhan pusing.'"}
+                            </p>
+                             <p className="text-xs mt-4 italic">
+                                Selalu konsultasikan dengan tenaga medis profesional untuk diagnosis.
+                            </p>
                         </div>
                     )}
                     {messages.map((message, index) => (

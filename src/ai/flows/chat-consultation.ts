@@ -8,6 +8,7 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {addPatient as addPatientToDb} from '@/services/patient-db';
 import type {Message} from 'genkit/ai';
 import {z} from 'genkit';
 
@@ -24,6 +25,24 @@ export type ChatConsultationInput = z.infer<typeof ChatConsultationInputSchema>;
 const ChatConsultationOutputSchema = z.string();
 export type ChatConsultationOutput = z.infer<typeof ChatConsultationOutputSchema>;
 
+const addPatientTool = ai.defineTool(
+  {
+    name: 'addPatientData',
+    description: "Use this tool to add a new patient's data to the system. Extract the name, age, and notes from the conversation.",
+    inputSchema: z.object({
+      name: z.string().describe("The patient's full name."),
+      age: z.number().describe("The patient's age in years."),
+      notes: z.string().describe("The patient's complaints or reasons for visit."),
+    }),
+    outputSchema: z.string(),
+  },
+  async (input) => {
+    const result = await addPatientToDb(input);
+    return result.message;
+  }
+);
+
+
 export async function chatConsultation(input: ChatConsultationInput): Promise<ChatConsultationOutput> {
   return chatConsultationFlow(input);
 }
@@ -35,7 +54,10 @@ const chatConsultationFlow = ai.defineFlow(
     outputSchema: ChatConsultationOutputSchema,
   },
   async ({ history }) => {
-    const systemPrompt = `You are a helpful medical assistant. Your role is to provide general medical information and advice for consultation purposes. You are not a real doctor and you must always remind the user to consult with a qualified healthcare professional for any serious medical concerns or before making any health decisions. Do not provide a diagnosis. Respond in Bahasa Indonesia.`;
+    const systemPrompt = `You are a helpful medical assistant. Your role is to provide general medical information and advice for consultation purposes. 
+You are not a real doctor and you must always remind the user to consult with a qualified healthcare professional for any serious medical concerns or before making any health decisions. Do not provide a diagnosis.
+You can also record new patient data. If the user asks you to record a new patient, use the 'addPatientData' tool. Ask for clarification if any information like name, age, or complaint is missing.
+Respond in Bahasa Indonesia.`;
 
     const messages: Message[] = [
         {role: 'system', content: [{text: systemPrompt}]},
@@ -44,6 +66,7 @@ const chatConsultationFlow = ai.defineFlow(
 
     const response = await ai.generate({
       messages: messages,
+      tools: [addPatientTool],
     });
 
     return response.text;
