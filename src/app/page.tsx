@@ -3,6 +3,7 @@ import { ChatPopup } from '@/components/chat-popup';
 import { PatientList } from '@/components/patient-list';
 import { Stethoscope, FileText, Users } from 'lucide-react';
 import Image from 'next/image';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Home() {
   return (
@@ -30,22 +31,25 @@ export default function Home() {
       </header>
       
       <main className="relative -mt-16 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 space-y-12">
-            <section id="ahp-advisor">
-              <div className="flex items-center gap-3 mb-6">
-                <FileText className="h-8 w-8 text-primary"/>
-                <h2 className="text-3xl font-bold">Penasihat Rujukan AHP</h2>
-              </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+          <Tabs defaultValue="ahp-advisor" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="ahp-advisor">
+                <FileText className="mr-2 h-4 w-4" />
+                Penasihat Rujukan AHP
+              </TabsTrigger>
+              <TabsTrigger value="patient-list">
+                <Users className="mr-2 h-4 w-4" />
+                Daftar Pasien
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="ahp-advisor" className="mt-6">
               <AHPForm />
-            </section>
-
-            <section id="patient-list">
-               <div className="flex items-center gap-3 mb-6">
-                <Users className="h-8 w-8 text-primary"/>
-                <h2 className="text-3xl font-bold">Daftar Pasien</h2>
-              </div>
+            </TabsContent>
+            <TabsContent value="patient-list" className="mt-6">
               <PatientList />
-            </section>
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
 
