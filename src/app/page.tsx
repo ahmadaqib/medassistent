@@ -1,13 +1,13 @@
 import { AHPForm } from '@/components/ahp-form';
 import { ChatPopup } from '@/components/chat-popup';
 import { PatientList } from '@/components/patient-list';
-import { Stethoscope, FileText, Users } from 'lucide-react';
+import { Stethoscope, FileText, Users, MessageSquare } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from '@/components/ui/button';
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-muted/30">
+    <div className="flex flex-col min-h-screen bg-muted/40">
       <main className="flex-1">
         <section className="relative py-20 md:py-32 text-center bg-background border-b">
           <div
@@ -39,8 +39,40 @@ export default function Home() {
               </div>
           </div>
         </section>
+
+        <section className="py-16 sm:py-24 bg-muted/50">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold tracking-tight text-foreground">Fitur Unggulan</h2>
+              <p className="mt-2 text-lg text-muted-foreground">Alat bantu cerdas untuk menyederhanakan alur kerja klinis Anda.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="text-center p-8 bg-background rounded-lg shadow-sm border flex flex-col items-center">
+                <div className="inline-flex items-center justify-center bg-primary/10 text-primary rounded-lg p-4 mb-4">
+                  <FileText className="h-8 w-8"/>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Analisis Rujukan Cerdas</h3>
+                <p className="text-muted-foreground">Dapatkan rekomendasi rujukan pasien yang didukung oleh data dan AI untuk pengambilan keputusan yang lebih baik.</p>
+              </div>
+              <div className="text-center p-8 bg-background rounded-lg shadow-sm border flex flex-col items-center">
+                <div className="inline-flex items-center justify-center bg-primary/10 text-primary rounded-lg p-4 mb-4">
+                  <Users className="h-8 w-8"/>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Manajemen Pasien AI</h3>
+                <p className="text-muted-foreground">Catat dan kelola data pasien dengan mudah melalui asisten AI, mengurangi pekerjaan administrasi manual.</p>
+              </div>
+              <div className="text-center p-8 bg-background rounded-lg shadow-sm border flex flex-col items-center">
+                <div className="inline-flex items-center justify-center bg-primary/10 text-primary rounded-lg p-4 mb-4">
+                  <MessageSquare className="h-8 w-8"/>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Konsultasi Instan</h3>
+                <p className="text-muted-foreground">Berikan jawaban instan untuk pertanyaan umum seputar kesehatan dengan asisten chat yang selalu tersedia.</p>
+              </div>
+            </div>
+          </div>
+        </section>
         
-        <section id="referral-advisor" className="py-16 sm:py-24">
+        <section id="referral-advisor" className="py-16 sm:py-24 bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <Tabs defaultValue="ahp-advisor" className="w-full">
               <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 max-w-md mx-auto mb-10 h-auto sm:h-10">
@@ -65,7 +97,7 @@ export default function Home() {
       </main>
 
       <footer className="text-center py-8 text-sm text-muted-foreground border-t bg-background">
-          <p>© {new Date().getFullYear()} Firebase Studio. Semua Hak Dilindungi.</p>
+          <p>© {new Date().getFullYear()} Ideatech.Devs. Semua Hak Dilindungi.</p>
       </footer>
       
       <ChatPopup />
