@@ -38,8 +38,8 @@ const chatConsultationFlow = ai.defineFlow(
     const systemPrompt = `You are a helpful medical assistant. Your role is to provide general medical information and advice for consultation purposes. You are not a real doctor and you must always remind the user to consult with a qualified healthcare professional for any serious medical concerns or before making any health decisions. Do not provide a diagnosis. Respond in Bahasa Indonesia.`;
 
     const messages: Message[] = [
-        {role: 'system', content: systemPrompt},
-        ...history.map(msg => ({role: msg.role, content: msg.content})),
+        {role: 'system', content: [{text: systemPrompt}]},
+        ...history.map(msg => ({role: msg.role, content: [{text: msg.content}]})),
     ];
 
     const response = await ai.generate({
