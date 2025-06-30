@@ -1,8 +1,9 @@
 import { AHPForm } from '@/components/ahp-form';
+import { ChatConsultation } from '@/components/chat-consultation';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-background flex flex-col items-center p-4 sm:p-6 lg:p-8">
       <div className="w-full max-w-6xl mx-auto">
         <header className="text-center mb-8">
           <h1 className="text-4xl font-bold font-headline text-foreground">
@@ -12,8 +13,9 @@ export default function Home() {
             Aplikasi pendukung keputusan untuk kelayakan rujukan pasien menggunakan metode Analytic Hierarchy Process (AHP).
           </p>
         </header>
-        <main>
+        <main className="space-y-8">
           <AHPForm />
+          <ChatConsultation />
         </main>
         <footer className="text-center mt-8 text-sm text-muted-foreground">
           <p>Dibuat untuk Firebase Studio</p>
