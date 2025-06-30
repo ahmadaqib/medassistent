@@ -3,6 +3,7 @@
 import { useState, useMemo, type FC } from 'react';
 import { generateReferralReason } from '@/ai/flows/generate-referral-reason';
 import { extractPatientData } from '@/ai/flows/extract-patient-data';
+import { calculateFuzzyRecommendation, type FuzzyResult } from '@/lib/fuzzy-logic';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -12,11 +13,14 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
-import { HeartPulse, ShieldCheck, Smile, Loader2, Info, Lightbulb } from 'lucide-react';
+import { HeartPulse, ShieldCheck, Smile, Loader2, Info, Lightbulb, Scale, BrainCircuit } from 'lucide-react';
 
-interface Result {
+interface AhpResult {
   score: number;
   recommendation: 'Kemungkinan Dirujuk' | 'Tidak Mungkin Dirujuk';
+}
+
+interface CombinedResult extends AhpResult {
   reason: string;
 }
 
@@ -50,6 +54,27 @@ const SliderControl: FC<{
     </div>
 );
 
+const ResultCard: FC<{
+    icon: React.ElementType;
+    title: string;
+    score: number;
+    description: string;
+    level?: string;
+}> = ({ icon: Icon, title, score, description, level }) => (
+    <Card className="flex-1 bg-background/50">
+        <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-lg">
+                <Icon className="h-5 w-5 text-primary" />
+                {title}
+            </CardTitle>
+        </CardHeader>
+        <CardContent>
+            <div className="text-4xl font-bold text-foreground">{score}<span className="text-xl text-muted-foreground">/100</span></div>
+            <p className="text-xs text-muted-foreground">{description}</p>
+            {level && <Badge variant="outline" className="mt-2">{level}</Badge>}
+        </CardContent>
+    </Card>
+);
 
 export function AHPForm() {
     // Patient criteria scores
@@ -63,7 +88,9 @@ export function AHPForm() {
     const [personalPreferenceWeight, setPersonalPreferenceWeight] = useState(25);
     const [useDefaultWeights, setUseDefaultWeights] = useState(true);
 
-    const [result, setResult] = useState<Result | null>(null);
+    const [ahpResult, setAhpResult] = useState<AhpResult | null>(null);
+    const [fuzzyResult, setFuzzyResult] = useState<FuzzyResult | null>(null);
+    const [aiReason, setAiReason] = useState<string>('');
     const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
     
     // AI Data Extraction
@@ -102,38 +129,41 @@ export function AHPForm() {
 
     const handleCalculate = async () => {
         setStatus('loading');
-        setResult(null);
+        setAhpResult(null);
+        setFuzzyResult(null);
+        setAiReason('');
 
-        const finalScore =
+        // 1. AHP Calculation
+        const ahpScore =
             (clinicalScore * (normalizedWeights.clinical / 100)) +
             (insuranceScore * (normalizedWeights.insurance / 100)) +
             (personalPreferenceScore * (normalizedWeights.personalPreference / 100));
-
-        const roundedScore = Math.round(finalScore);
-        const referralRecommended = roundedScore > 60;
+        const roundedAhpScore = Math.round(ahpScore);
+        const referralRecommended = roundedAhpScore > 60;
         const recommendation = referralRecommended ? 'Kemungkinan Dirujuk' : 'Tidak Mungkin Dirujuk';
+        
+        setAhpResult({ score: roundedAhpScore, recommendation });
+        
+        // 2. Fuzzy Logic Calculation
+        const fuzzy = calculateFuzzyRecommendation({ clinicalScore, insuranceScore, personalPreferenceScore });
+        setFuzzyResult(fuzzy);
 
+        // 3. AI Reason Generation
         try {
             const aiResult = await generateReferralReason({
                 clinicalScore,
                 insuranceScore,
                 personalPreferenceScore,
+                ahpScore: roundedAhpScore,
+                fuzzyScore: fuzzy.score,
+                fuzzyLevel: fuzzy.level,
                 referralRecommended
             });
-
-            setResult({
-                score: roundedScore,
-                recommendation,
-                reason: aiResult.reason,
-            });
-            setStatus('success');
+            setAiReason(aiResult.reason);
         } catch (error) {
             console.error("AI reason generation failed:", error);
-            setResult({
-                score: roundedScore,
-                recommendation,
-                reason: "Tidak dapat membuat ringkasan karena terjadi kesalahan.",
-            });
+            setAiReason("Tidak dapat membuat ringkasan karena terjadi kesalahan.");
+        } finally {
             setStatus('success');
         }
     };
@@ -186,7 +216,7 @@ export function AHPForm() {
 
                         <div>
                              <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-xl font-semibold text-foreground">Bobot Kriteria</h3>
+                                <h3 className="text-xl font-semibold text-foreground">Bobot Kriteria (AHP)</h3>
                                 <div className="flex items-center space-x-2">
                                     <Switch id="default-weights" checked={useDefaultWeights} onCheckedChange={setUseDefaultWeights} />
                                     <Label htmlFor="default-weights">Gunakan Default</Label>
@@ -206,13 +236,16 @@ export function AHPForm() {
                             <div className="text-center text-muted-foreground">
                                 <Info className="mx-auto h-12 w-12 mb-4"/>
                                 <h4 className="font-semibold text-lg">Menunggu Perhitungan</h4>
-                                <p className="text-sm">Masukkan data pasien secara manual atau dengan AI, lalu klik "Hitung" untuk melihat rekomendasi.</p>
+                                <p className="text-sm">Masukkan data pasien, lalu klik "Hitung" untuk melihat rekomendasi.</p>
                             </div>
                         )}
                         {status === 'loading' && (
                              <div className="w-full space-y-4">
                                  <Skeleton className="h-8 w-1/2 mx-auto" />
-                                 <Skeleton className="h-20 w-20 rounded-full mx-auto" />
+                                 <div className="flex gap-4">
+                                     <Skeleton className="h-32 w-1/2 rounded-lg" />
+                                     <Skeleton className="h-32 w-1/2 rounded-lg" />
+                                 </div>
                                  <div className="space-y-2 pt-4">
                                      <Skeleton className="h-6 w-1/3" />
                                      <Skeleton className="h-4 w-full" />
@@ -221,13 +254,26 @@ export function AHPForm() {
                                  </div>
                              </div>
                         )}
-                        {status === 'success' && result && (
+                        {status === 'success' && ahpResult && fuzzyResult && (
                             <div className="text-center w-full animate-in fade-in">
-                                <Badge variant={result.recommendation === 'Kemungkinan Dirujuk' ? 'default' : 'destructive'} className="text-lg px-4 py-1 mb-4">
-                                    {result.recommendation}
+                                <Badge variant={ahpResult.recommendation === 'Kemungkinan Dirujuk' ? 'default' : 'destructive'} className="text-lg px-4 py-1 mb-4">
+                                    {ahpResult.recommendation}
                                 </Badge>
-                                <div className="text-6xl font-bold text-foreground">{result.score}<span className="text-2xl text-muted-foreground">/100</span></div>
-                                <p className="text-muted-foreground font-medium mb-6">Skor Kesesuaian Keseluruhan</p>
+                                <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                                    <ResultCard
+                                        icon={Scale}
+                                        title="Skor AHP"
+                                        score={ahpResult.score}
+                                        description="Skor rata-rata tertimbang"
+                                    />
+                                    <ResultCard
+                                        icon={BrainCircuit}
+                                        title="Logika Fuzzy"
+                                        score={fuzzyResult.score}
+                                        description="Prioritas berbasis aturan"
+                                        level={fuzzyResult.level}
+                                    />
+                                </div>
                                 
                                 <Card className="text-left bg-transparent border-0 shadow-none">
                                     <CardHeader>
@@ -237,7 +283,7 @@ export function AHPForm() {
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <p className="text-sm text-foreground">{result.reason}</p>
+                                        <p className="text-sm text-foreground">{aiReason}</p>
                                     </CardContent>
                                 </Card>
                             </div>
