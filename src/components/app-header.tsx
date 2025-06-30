@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Stethoscope, FileText, Users, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
-import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from './ui/sheet';
 
 const navLinks = [
   { href: '/dashboard/referral-advisor', label: 'Penasihat Rujukan', icon: FileText },
@@ -56,6 +56,7 @@ export function AppHeader() {
                   </Button>
                </SheetTrigger>
                <SheetContent side="left" className="bg-card/80 backdrop-blur-xl border-card-foreground/10 p-0">
+                  <SheetTitle className="sr-only">Menu</SheetTitle>
                   <div className="flex h-full flex-col">
                      <div className="p-6 border-b border-card-foreground/10">
                         <Link
