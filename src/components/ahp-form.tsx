@@ -16,7 +16,7 @@ import { HeartPulse, ShieldCheck, Smile, Loader2, Info, Lightbulb } from 'lucide
 
 interface Result {
   score: number;
-  recommendation: 'Likely Referral' | 'Unlikely Referral';
+  recommendation: 'Kemungkinan Dirujuk' | 'Tidak Mungkin Dirujuk';
   reason: string;
 }
 
@@ -111,7 +111,7 @@ export function AHPForm() {
 
         const roundedScore = Math.round(finalScore);
         const referralRecommended = roundedScore > 60;
-        const recommendation = referralRecommended ? 'Likely Referral' : 'Unlikely Referral';
+        const recommendation = referralRecommended ? 'Kemungkinan Dirujuk' : 'Tidak Mungkin Dirujuk';
 
         try {
             const aiResult = await generateReferralReason({
@@ -132,7 +132,7 @@ export function AHPForm() {
             setResult({
                 score: roundedScore,
                 recommendation,
-                reason: "Could not generate reason due to an error.",
+                reason: "Tidak dapat membuat ringkasan karena terjadi kesalahan.",
             });
             setStatus('success');
         }
@@ -146,9 +146,9 @@ export function AHPForm() {
                     <div className="space-y-6">
                         <Card>
                             <CardHeader>
-                                <CardTitle className="text-xl">AI Data Extraction</CardTitle>
+                                <CardTitle className="text-xl">Ekstraksi Data AI</CardTitle>
                                 <CardDescription>
-                                    Paste patient notes below and let AI extract the scores for you.
+                                    Tempelkan catatan pasien di bawah dan biarkan AI mengekstrak skor untuk Anda.
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
@@ -163,21 +163,21 @@ export function AHPForm() {
                                     {isExtracting ? (
                                         <>
                                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            Analyzing...
+                                            Menganalisis...
                                         </>
                                     ) : (
-                                        "Analyze with AI"
+                                        "Analisis dengan AI"
                                     )}
                                 </Button>
                             </CardContent>
                         </Card>
 
                         <div>
-                            <h3 className="text-xl font-semibold mb-4 text-foreground">Patient Criteria</h3>
+                            <h3 className="text-xl font-semibold mb-4 text-foreground">Kriteria Pasien</h3>
                             <div className="space-y-6">
-                                <SliderControl icon={HeartPulse} title="Clinical" value={clinicalScore} onValueChange={setClinicalScore} />
-                                <SliderControl icon={ShieldCheck} title="Insurance" value={insuranceScore} onValueChange={setInsuranceScore} />
-                                <SliderControl icon={Smile} title="Personal Preference" value={personalPreferenceScore} onValueChange={setPersonalPreferenceScore} />
+                                <SliderControl icon={HeartPulse} title="Klinis" value={clinicalScore} onValueChange={setClinicalScore} />
+                                <SliderControl icon={ShieldCheck} title="Asuransi" value={insuranceScore} onValueChange={setInsuranceScore} />
+                                <SliderControl icon={Smile} title="Preferensi Pribadi" value={personalPreferenceScore} onValueChange={setPersonalPreferenceScore} />
                             </div>
                         </div>
 
@@ -185,16 +185,16 @@ export function AHPForm() {
 
                         <div>
                              <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-xl font-semibold text-foreground">Criteria Weights</h3>
+                                <h3 className="text-xl font-semibold text-foreground">Bobot Kriteria</h3>
                                 <div className="flex items-center space-x-2">
                                     <Switch id="default-weights" checked={useDefaultWeights} onCheckedChange={setUseDefaultWeights} />
-                                    <Label htmlFor="default-weights">Use Defaults</Label>
+                                    <Label htmlFor="default-weights">Gunakan Default</Label>
                                 </div>
                             </div>
                             <div className="space-y-6">
-                                <SliderControl icon={HeartPulse} title="Clinical" value={clinicalWeight} onValueChange={setClinicalWeight} disabled={useDefaultWeights} percentage={normalizedWeights.clinical} />
-                                <SliderControl icon={ShieldCheck} title="Insurance" value={insuranceWeight} onValueChange={setInsuranceWeight} disabled={useDefaultWeights} percentage={normalizedWeights.insurance} />
-                                <SliderControl icon={Smile} title="Personal Preference" value={personalPreferenceWeight} onValueChange={setPersonalPreferenceWeight} disabled={useDefaultWeights} percentage={normalizedWeights.personalPreference} />
+                                <SliderControl icon={HeartPulse} title="Klinis" value={clinicalWeight} onValueChange={setClinicalWeight} disabled={useDefaultWeights} percentage={normalizedWeights.clinical} />
+                                <SliderControl icon={ShieldCheck} title="Asuransi" value={insuranceWeight} onValueChange={setInsuranceWeight} disabled={useDefaultWeights} percentage={normalizedWeights.insurance} />
+                                <SliderControl icon={Smile} title="Preferensi Pribadi" value={personalPreferenceWeight} onValueChange={setPersonalPreferenceWeight} disabled={useDefaultWeights} percentage={normalizedWeights.personalPreference} />
                             </div>
                         </div>
                     </div>
@@ -204,8 +204,8 @@ export function AHPForm() {
                         {status === 'idle' && (
                             <div className="text-center text-muted-foreground">
                                 <Info className="mx-auto h-12 w-12 mb-4"/>
-                                <h4 className="font-semibold text-lg">Awaiting Calculation</h4>
-                                <p className="text-sm">Enter patient data manually or with AI, then click "Calculate" to see the recommendation.</p>
+                                <h4 className="font-semibold text-lg">Menunggu Perhitungan</h4>
+                                <p className="text-sm">Masukkan data pasien secara manual atau dengan AI, lalu klik "Hitung" untuk melihat rekomendasi.</p>
                             </div>
                         )}
                         {status === 'loading' && (
@@ -222,17 +222,17 @@ export function AHPForm() {
                         )}
                         {status === 'success' && result && (
                             <div className="text-center w-full animate-in fade-in">
-                                <Badge variant={result.recommendation === 'Likely Referral' ? 'default' : 'destructive'} className={`text-lg px-4 py-1 mb-4 ${result.recommendation === 'Likely Referral' ? 'bg-green-100 text-green-800 border-green-200' : 'bg-red-100 text-red-800 border-red-200'}`}>
+                                <Badge variant={result.recommendation === 'Kemungkinan Dirujuk' ? 'default' : 'destructive'} className={`text-lg px-4 py-1 mb-4 ${result.recommendation === 'Kemungkinan Dirujuk' ? 'bg-green-100 text-green-800 border-green-200' : 'bg-red-100 text-red-800 border-red-200'}`}>
                                     {result.recommendation}
                                 </Badge>
                                 <div className="text-6xl font-bold text-foreground">{result.score}<span className="text-2xl text-muted-foreground">/100</span></div>
-                                <p className="text-muted-foreground font-medium mb-6">Overall Suitability Score</p>
+                                <p className="text-muted-foreground font-medium mb-6">Skor Kesesuaian Keseluruhan</p>
                                 
                                 <Card className="text-left bg-background/70">
                                     <CardHeader>
                                         <CardTitle className="flex items-center gap-2 text-base">
                                             <Lightbulb className="h-5 w-5 text-primary"/>
-                                            AI Generated Summary
+                                            Ringkasan oleh AI
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent>
@@ -246,7 +246,7 @@ export function AHPForm() {
             </CardContent>
             <CardFooter className="bg-slate-50 p-6 border-t">
                 <Button size="lg" onClick={handleCalculate} disabled={status === 'loading'} className="w-full sm:w-auto">
-                    {status === 'loading' ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Calculating...</> : 'Calculate Recommendation'}
+                    {status === 'loading' ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Menghitung...</> : 'Hitung Rekomendasi'}
                 </Button>
             </CardFooter>
         </Card>

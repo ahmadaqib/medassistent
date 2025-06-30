@@ -29,7 +29,7 @@ export function ChatPopup() {
         <DialogHeader className="p-6 pb-2 border-b">
           <DialogTitle>Chat Konsultasi</DialogTitle>
           <DialogDescription>
-            Ajukan pertanyaan terkait kesehatan Anda. Asisten AI akan membantu memberikan informasi umum.
+            Ajukan pertanyaan terkait kesehatan. Asisten AI akan membantu memberikan informasi umum dan mencatat data pasien.
           </DialogDescription>
         </DialogHeader>
         <div className="flex-1 min-h-0 p-6">

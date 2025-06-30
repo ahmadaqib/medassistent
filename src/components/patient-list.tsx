@@ -17,9 +17,9 @@ import { Badge } from "@/components/ui/badge";
 import { Users } from "lucide-react";
 
 const mockPatients = [
-    { id: "PID_1678886400", name: "Siti Aminah", age: 30, lastVisit: "2024-05-10", status: "Active" },
-    { id: "PID_1678886401", name: "Budi Santoso", age: 45, lastVisit: "2024-05-12", status: "Active" },
-    { id: "PID_1678886402", name: "Rina Marlina", age: 28, lastVisit: "2024-04-28", status: "Discharged" },
+    { id: "PID_1678886400", name: "Siti Aminah", age: 30, lastVisit: "2024-05-10", status: "Aktif" },
+    { id: "PID_1678886401", name: "Budi Santoso", age: 45, lastVisit: "2024-05-12", status: "Aktif" },
+    { id: "PID_1678886402", name: "Rina Marlina", age: 28, lastVisit: "2024-04-28", status: "Selesai" },
 ];
 
 export function PatientList() {
@@ -28,20 +28,20 @@ export function PatientList() {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <Users className="h-6 w-6" />
-                    Patient List
+                    Daftar Pasien
                 </CardTitle>
                 <CardDescription>
-                    A list of patients currently in the system. This is a demonstration and is not yet connected to a live database.
+                    Daftar pasien yang saat ini ada di sistem. Ini adalah demonstrasi dan belum terhubung ke database langsung.
                 </CardDescription>
             </CardHeader>
             <CardContent>
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Patient ID</TableHead>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Age</TableHead>
-                            <TableHead>Last Visit</TableHead>
+                            <TableHead>ID Pasien</TableHead>
+                            <TableHead>Nama</TableHead>
+                            <TableHead>Usia</TableHead>
+                            <TableHead>Kunjungan Terakhir</TableHead>
                             <TableHead className="text-right">Status</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -53,7 +53,7 @@ export function PatientList() {
                                 <TableCell>{patient.age}</TableCell>
                                 <TableCell>{patient.lastVisit}</TableCell>
                                 <TableCell className="text-right">
-                                    <Badge variant={patient.status === "Active" ? "default" : "outline"}>
+                                    <Badge variant={patient.status === "Aktif" ? "default" : "outline"}>
                                         {patient.status}
                                     </Badge>
                                 </TableCell>
@@ -63,8 +63,8 @@ export function PatientList() {
                 </Table>
                  {mockPatients.length === 0 && (
                     <div className="text-center py-12 text-muted-foreground">
-                        <p>No patient data recorded yet.</p>
-                        <p className="text-sm">Use the chat assistant to add new patients.</p>
+                        <p>Belum ada data pasien yang tercatat.</p>
+                        <p className="text-sm">Gunakan asisten chat untuk menambahkan pasien baru.</p>
                     </div>
                 )}
             </CardContent>
