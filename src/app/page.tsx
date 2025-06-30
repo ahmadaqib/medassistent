@@ -1,5 +1,5 @@
 import { AHPForm } from '@/components/ahp-form';
-import { ChatConsultation } from '@/components/chat-consultation';
+import { ChatPopup } from '@/components/chat-popup';
 
 export default function Home() {
   return (
@@ -15,12 +15,12 @@ export default function Home() {
         </header>
         <main className="space-y-8">
           <AHPForm />
-          <ChatConsultation />
         </main>
         <footer className="text-center mt-8 text-sm text-muted-foreground">
           <p>Dibuat untuk Firebase Studio</p>
         </footer>
       </div>
+      <ChatPopup />
     </div>
   );
 }

@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from 'react';
 import { chatConsultation } from '@/ai/flows/chat-consultation';
 import type { ChatConsultationInput } from '@/ai/flows/chat-consultation';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -60,79 +59,71 @@ export function ChatConsultation() {
     };
 
     return (
-        <Card className="shadow-lg">
-            <CardHeader>
-                <CardTitle>Chat Konsultasi</CardTitle>
-                <CardDescription>
-                    Ajukan pertanyaan terkait kesehatan Anda. Asisten AI akan membantu memberikan informasi umum.
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <ScrollArea className="h-[400px] w-full pr-4" viewportRef={scrollViewportRef}>
-                    <div className="space-y-4">
-                        {messages.length === 0 && (
-                            <div className="flex h-full items-center justify-center text-muted-foreground pt-16">
-                                <p>Belum ada pesan. Mulai percakapan!</p>
-                            </div>
-                        )}
-                        {messages.map((message, index) => (
-                            <div
-                                key={index}
-                                className={cn(
-                                    "flex items-start gap-3",
-                                    message.role === 'user' ? 'justify-end' : 'justify-start'
-                                )}
-                            >
-                                {message.role === 'model' && (
-                                    <Avatar className="h-8 w-8">
-                                        <AvatarFallback><Bot className="h-5 w-5"/></AvatarFallback>
-                                    </Avatar>
-                                )}
-                                <div
-                                    className={cn(
-                                        "rounded-lg px-4 py-2 max-w-[80%] whitespace-pre-wrap",
-                                        message.role === 'user'
-                                            ? 'bg-primary text-primary-foreground'
-                                            : 'bg-muted'
-                                    )}
-                                >
-                                    {message.content}
-                                </div>
-                                {message.role === 'user' && (
-                                    <Avatar className="h-8 w-8">
-                                        <AvatarFallback><User className="h-5 w-5"/></AvatarFallback>
-                                    </Avatar>
-                                )}
-                            </div>
-                        ))}
-                        {isLoading && (
-                            <div className="flex items-start gap-3 justify-start">
+        <div className="flex flex-col h-full">
+            <ScrollArea className="flex-1 pr-4 -mr-4" viewportRef={scrollViewportRef}>
+                <div className="space-y-4">
+                    {messages.length === 0 && (
+                        <div className="flex h-full flex-col items-center justify-center text-muted-foreground pt-16 text-center">
+                            <Bot className="h-12 w-12 mb-4" />
+                            <h3 className="font-semibold">Selamat Datang!</h3>
+                            <p className="text-sm">Mulai percakapan dengan mengajukan pertanyaan di bawah ini.</p>
+                        </div>
+                    )}
+                    {messages.map((message, index) => (
+                        <div
+                            key={index}
+                            className={cn(
+                                "flex items-start gap-3",
+                                message.role === 'user' ? 'justify-end' : 'justify-start'
+                            )}
+                        >
+                            {message.role === 'model' && (
                                 <Avatar className="h-8 w-8">
                                     <AvatarFallback><Bot className="h-5 w-5"/></AvatarFallback>
                                 </Avatar>
-                                <div className="rounded-lg px-4 py-2 bg-muted flex items-center">
-                                    <Loader2 className="h-5 w-5 animate-spin"/>
-                                </div>
+                            )}
+                            <div
+                                className={cn(
+                                    "rounded-lg px-4 py-2 max-w-[80%] whitespace-pre-wrap",
+                                    message.role === 'user'
+                                        ? 'bg-primary text-primary-foreground'
+                                        : 'bg-muted'
+                                )}
+                            >
+                                {message.content}
                             </div>
-                        )}
-                    </div>
-                </ScrollArea>
-            </CardContent>
-            <CardFooter>
-                <div className="flex w-full items-center space-x-2">
-                    <Input
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                        placeholder="Ketik pertanyaan Anda di sini..."
-                        disabled={isLoading}
-                    />
-                    <Button onClick={handleSend} disabled={isLoading || !input.trim()}>
-                        {isLoading ? <Loader2 className="h-4 w-4 animate-spin"/> : <Send className="h-4 w-4" />}
-                        <span className="sr-only">Kirim</span>
-                    </Button>
+                            {message.role === 'user' && (
+                                <Avatar className="h-8 w-8">
+                                    <AvatarFallback><User className="h-5 w-5"/></AvatarFallback>
+                                </Avatar>
+                            )}
+                        </div>
+                    ))}
+                    {isLoading && (
+                        <div className="flex items-start gap-3 justify-start">
+                            <Avatar className="h-8 w-8">
+                                <AvatarFallback><Bot className="h-5 w-5"/></AvatarFallback>
+                            </Avatar>
+                            <div className="rounded-lg px-4 py-2 bg-muted flex items-center">
+                                <Loader2 className="h-5 w-5 animate-spin"/>
+                            </div>
+                        </div>
+                    )}
                 </div>
-            </CardFooter>
-        </Card>
+            </ScrollArea>
+             <div className="mt-4 flex w-full items-center space-x-2">
+                <Input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                    placeholder="Ketik pertanyaan Anda di sini..."
+                    disabled={isLoading}
+                />
+                <Button onClick={handleSend} disabled={isLoading || !input.trim()}>
+                    {isLoading ? <Loader2 className="h-4 w-4 animate-spin"/> : <Send className="h-4 w-4" />}
+                    <span className="sr-only">Kirim</span>
+                </Button>
+            </div>
+        </div>
     );
 }
