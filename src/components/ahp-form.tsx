@@ -2,6 +2,7 @@
 
 import { useState, useMemo, type FC } from 'react';
 import { generateReferralReason } from '@/ai/flows/generate-referral-reason';
+import { extractPatientData } from '@/ai/flows/extract-patient-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -10,6 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Textarea } from '@/components/ui/textarea';
 import { HeartPulse, ShieldCheck, Smile, Loader2, Info, Lightbulb } from 'lucide-react';
 
 interface Result {
@@ -63,6 +65,10 @@ export function AHPForm() {
 
     const [result, setResult] = useState<Result | null>(null);
     const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
+    
+    // AI Data Extraction
+    const [patientNotes, setPatientNotes] = useState('');
+    const [isExtracting, setIsExtracting] = useState(false);
 
     const normalizedWeights = useMemo(() => {
         if (useDefaultWeights) {
@@ -77,6 +83,22 @@ export function AHPForm() {
             personalPreference: (personalPreferenceWeight / totalWeight) * 100,
         };
     }, [useDefaultWeights, clinicalWeight, insuranceWeight, personalPreferenceWeight]);
+
+    const handleAnalyzeWithAI = async () => {
+        if (!patientNotes.trim()) return;
+        setIsExtracting(true);
+        try {
+            const result = await extractPatientData({ notes: patientNotes });
+            setClinicalScore(result.clinicalScore);
+            setInsuranceScore(result.insuranceScore);
+            setPersonalPreferenceScore(result.personalPreferenceScore);
+        } catch (error) {
+            console.error("AI data extraction failed:", error);
+            // Optionally, show a toast notification to the user
+        } finally {
+            setIsExtracting(false);
+        }
+    };
 
     const handleCalculate = async () => {
         setStatus('loading');
@@ -122,6 +144,34 @@ export function AHPForm() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
                     {/* LEFT COLUMN: INPUTS */}
                     <div className="space-y-6">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-xl">AI Data Extraction</CardTitle>
+                                <CardDescription>
+                                    Paste patient notes below and let AI extract the scores for you.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <Textarea
+                                    placeholder="e.g., Pasien, Bp. John Doe, mengeluh nyeri dada selama 3 hari. Memiliki riwayat penyakit jantung. Asuransi BPJS kelas 1. Pasien ingin segera dirujuk ke spesialis jantung..."
+                                    value={patientNotes}
+                                    onChange={(e) => setPatientNotes(e.target.value)}
+                                    rows={5}
+                                    disabled={isExtracting}
+                                />
+                                <Button onClick={handleAnalyzeWithAI} disabled={isExtracting || !patientNotes.trim()} className="w-full">
+                                    {isExtracting ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            Analyzing...
+                                        </>
+                                    ) : (
+                                        "Analyze with AI"
+                                    )}
+                                </Button>
+                            </CardContent>
+                        </Card>
+
                         <div>
                             <h3 className="text-xl font-semibold mb-4 text-foreground">Patient Criteria</h3>
                             <div className="space-y-6">
@@ -155,7 +205,7 @@ export function AHPForm() {
                             <div className="text-center text-muted-foreground">
                                 <Info className="mx-auto h-12 w-12 mb-4"/>
                                 <h4 className="font-semibold text-lg">Awaiting Calculation</h4>
-                                <p className="text-sm">Adjust criteria and weights, then click "Calculate" to see the referral recommendation.</p>
+                                <p className="text-sm">Enter patient data manually or with AI, then click "Calculate" to see the recommendation.</p>
                             </div>
                         )}
                         {status === 'loading' && (
