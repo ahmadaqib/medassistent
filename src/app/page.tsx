@@ -1,8 +1,5 @@
-import { AHPForm } from '@/components/ahp-form';
-import { ChatPopup } from '@/components/chat-popup';
-import { PatientList } from '@/components/patient-list';
 import { Stethoscope, FileText, Users, MessageSquare } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 export default function Home() {
@@ -31,7 +28,7 @@ export default function Home() {
               </p>
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                   <Button size="lg" asChild className="w-full sm:w-auto">
-                      <a href="#referral-advisor">Mulai Analisis Rujukan</a>
+                      <Link href="/dashboard">Mulai Gunakan Aplikasi</Link>
                   </Button>
                   <Button size="lg" variant="outline" className="w-full sm:w-auto bg-card/60 dark:bg-card/40 backdrop-blur-xl border-card-foreground/10">
                       Jadwalkan Demo
@@ -71,36 +68,11 @@ export default function Home() {
             </div>
           </div>
         </section>
-        
-        <section id="referral-advisor" className="py-16 sm:py-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <Tabs defaultValue="ahp-advisor" className="w-full">
-              <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 max-w-md mx-auto mb-10 h-auto p-1 bg-card/60 dark:bg-card/40 backdrop-blur-xl border border-card-foreground/10 rounded-lg">
-                <TabsTrigger value="ahp-advisor" className="py-2 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg">
-                  <FileText className="mr-2 h-4 w-4" />
-                  Penasihat Rujukan AHP
-                </TabsTrigger>
-                <TabsTrigger value="patient-list" className="py-2 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg">
-                  <Users className="mr-2 h-4 w-4" />
-                  Daftar Pasien
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="ahp-advisor">
-                <AHPForm />
-              </TabsContent>
-              <TabsContent value="patient-list">
-                <PatientList />
-              </TabsContent>
-            </Tabs>
-          </div>
-        </section>
       </main>
 
       <footer className="text-center py-6 text-sm text-muted-foreground border-t border-card-foreground/10 bg-card/10 backdrop-blur-lg">
           <p>© {new Date().getFullYear()} Ideatech.Devs. Semua Hak Dilindungi.</p>
       </footer>
-      
-      <ChatPopup />
     </div>
   );
 }
