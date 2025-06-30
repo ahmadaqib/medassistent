@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-muted/40">
+    <div className="flex flex-col min-h-screen bg-background">
       <main className="flex-1">
         <section className="relative py-20 md:py-32 text-center bg-background border-b">
           <div
@@ -40,7 +40,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="py-16 sm:py-24 bg-muted/50">
+        <section className="py-16 sm:py-24 bg-muted/40">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tight text-foreground">Fitur Unggulan</h2>

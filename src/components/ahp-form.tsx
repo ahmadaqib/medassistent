@@ -244,7 +244,7 @@ export function AHPForm() {
                     </div>
                 </div>
             </CardContent>
-            <CardFooter className="bg-slate-50 p-6 border-t">
+            <CardFooter className="bg-muted p-6 border-t">
                 <Button size="lg" onClick={handleCalculate} disabled={status === 'loading'} className="w-full sm:w-auto">
                     {status === 'loading' ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Menghitung...</> : 'Hitung Rekomendasi'}
                 </Button>
