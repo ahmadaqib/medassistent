@@ -15,14 +15,11 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Users } from "lucide-react";
+import { getPatients } from "@/services/patient-db";
 
-const mockPatients = [
-    { id: "PID_1678886400", name: "Siti Aminah", age: 30, lastVisit: "2024-05-10", status: "Aktif" },
-    { id: "PID_1678886401", name: "Budi Santoso", age: 45, lastVisit: "2024-05-12", status: "Aktif" },
-    { id: "PID_1678886402", name: "Rina Marlina", age: 28, lastVisit: "2024-04-28", status: "Selesai" },
-];
+export async function PatientList() {
+    const patients = await getPatients();
 
-export function PatientList() {
     return (
         <Card className="bg-card/60 dark:bg-card/40 backdrop-blur-xl border border-card-foreground/10 shadow-2xl">
             <CardHeader>
@@ -31,7 +28,7 @@ export function PatientList() {
                     Daftar Pasien
                 </CardTitle>
                 <CardDescription>
-                    Daftar pasien yang saat ini ada di sistem. Ini adalah demonstrasi dan belum terhubung ke database langsung.
+                    Daftar pasien yang tercatat di dalam sistem. Data ini diambil langsung dari database.
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -46,12 +43,12 @@ export function PatientList() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {mockPatients.map((patient) => (
+                        {patients.map((patient) => (
                              <TableRow key={patient.id} className="border-card-foreground/10">
                                 <TableCell className="font-mono text-xs">{patient.id}</TableCell>
                                 <TableCell className="font-medium">{patient.name}</TableCell>
                                 <TableCell>{patient.age}</TableCell>
-                                <TableCell>{patient.lastVisit}</TableCell>
+                                <TableCell>{patient.lastVisit.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</TableCell>
                                 <TableCell className="text-right">
                                     <Badge variant={patient.status === "Aktif" ? "default" : "outline"}>
                                         {patient.status}
@@ -61,7 +58,7 @@ export function PatientList() {
                         ))}
                     </TableBody>
                 </Table>
-                 {mockPatients.length === 0 && (
+                 {patients.length === 0 && (
                     <div className="text-center py-12 text-muted-foreground">
                         <p>Belum ada data pasien yang tercatat.</p>
                         <p className="text-sm">Gunakan asisten chat untuk menambahkan pasien baru.</p>
