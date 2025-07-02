@@ -11,6 +11,8 @@ export interface PatientInput {
     name: string;
     age: number;
     notes: string;
+    isActive?: boolean;      // opsional
+    lastVisit?: Date;        // opsional
 }
 
 /**
@@ -25,6 +27,8 @@ export async function addPatient(patient: PatientInput): Promise<{ success: bool
                 name: patient.name,
                 age: patient.age,
                 notes: patient.notes,
+                isActive: patient.isActive ?? true,
+                lastVisit: patient.lastVisit ?? new Date(),
             },
         });
 
@@ -64,5 +68,62 @@ export async function getPatients() {
         console.error("Failed to retrieve patients:", error);
         // In a real app, you might want to throw the error or handle it differently.
         return [];
+    }
+}
+
+// Update status atau data pasien
+export async function updatePatient(id: string, data: Partial<PatientInput>) {
+    try {
+        const updated = await prisma.patient.update({
+            where: { id },
+            data,
+        });
+        return { success: true, message: "Data pasien berhasil diupdate.", patient: updated };
+    } catch (error) {
+        console.error("Failed to update patient:", error);
+        return { success: false, message: "Gagal mengupdate data pasien." };
+    }
+}
+
+// Hapus pasien
+export async function deletePatient(id: string) {
+    try {
+        await prisma.patient.delete({ where: { id } });
+        return { success: true, message: "Data pasien berhasil dihapus." };
+    } catch (error) {
+        console.error("Failed to delete patient:", error);
+        return { success: false, message: "Gagal menghapus data pasien." };
+    }
+}
+
+export async function searchPatientsByName(name: string) {
+    try {
+        const patients = await prisma.patient.findMany({
+            where: {
+                name: {
+                    contains: name,
+                    mode: 'insensitive',
+                },
+            },
+            orderBy: {
+                lastVisit: 'desc',
+            },
+        });
+        return patients;
+    } catch (error) {
+        console.error("Failed to search patients:", error);
+        return [];
+    }
+}
+
+export async function searchPatientById(id: string) {
+    try {
+        const patient = await prisma.patient.findUnique({
+            where: { id },
+        });
+        return patient;
+    } catch (error) {
+        console.error("Failed to search patient by ID:", error);
+        return null;
     }
 }

@@ -49,9 +49,18 @@ export function ChatConsultation() {
             const response = await chatConsultation({ history });
             const modelMessage: Message = { role: 'model', content: response };
             setMessages(prev => [...prev, modelMessage]);
-        } catch (error) {
+        } catch (error: any) {
             console.error("Chat consultation failed:", error);
-            const errorMessage: Message = { role: 'model', content: "Maaf, terjadi kesalahan saat memproses permintaan Anda." };
+            let errorMsg = "Maaf, terjadi kesalahan saat memproses permintaan Anda.";
+            // Deteksi error 503 dari Google Generative AI
+            if (
+                error?.message?.includes("503") ||
+                error?.message?.toLowerCase().includes("service unavailable") ||
+                error?.status === 503
+            ) {
+                errorMsg = "Maaf, layanan AI sedang sibuk. Silakan coba beberapa saat lagi.";
+            }
+            const errorMessage: Message = { role: 'model', content: errorMsg };
             setMessages(prev => [...prev, errorMessage]);
         } finally {
             setIsLoading(false);
@@ -67,7 +76,18 @@ export function ChatConsultation() {
                             <Bot className="h-10 w-10 mb-4" />
                             <h3 className="font-semibold text-lg">Selamat Datang!</h3>
                             <p className="text-sm whitespace-pre-wrap text-left bg-muted p-4 rounded-md mt-4">
-                                {"Saya adalah asisten AI medis Anda. Anda dapat:\n\n1. **Bertanya tentang informasi medis umum.**\n2. **Mencatat data pasien baru.**\n   Contoh: 'Tolong catat pasien Budi, 45 th, keluhan pusing.'"}
+                                {`Selamat datang di Asisten AI Medis.
+
+Anda dapat:
+1. Bertanya seputar informasi medis umum.
+2. Mencatat data pasien baru.
+   Contoh: 'Catat pasien Budi, 45 tahun, keluhan pusing.'
+3. Mengatur status aktif dan tanggal kunjungan terakhir pasien (opsional).
+   Contoh: 'Catat pasien Budi, 45 tahun, keluhan pusing, tidak aktif, terakhir berkunjung 1 Mei 2024.'
+
+Jika status aktif dan tanggal kunjungan terakhir tidak disebutkan, akan otomatis diisi aktif dan hari ini.
+
+Anda juga dapat mengubah atau menghapus data pasien berdasarkan ID.`}
                             </p>
                              <p className="text-xs mt-4 italic">
                                 Selalu konsultasikan dengan tenaga medis profesional untuk diagnosis.

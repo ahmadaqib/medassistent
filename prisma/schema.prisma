@@ -16,6 +16,6 @@ model Patient {
   name      String
   age       Int
   notes     String
-  status    String   @default("Aktif")
+  isActive  Boolean  @default(true)
   lastVisit DateTime @default(now())
 }

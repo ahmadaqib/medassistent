@@ -50,8 +50,8 @@ export async function PatientList() {
                                 <TableCell>{patient.age}</TableCell>
                                 <TableCell>{patient.lastVisit.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</TableCell>
                                 <TableCell className="text-right">
-                                    <Badge variant={patient.status === "Aktif" ? "default" : "outline"}>
-                                        {patient.status}
+                                    <Badge variant={patient.isActive ? "default" : "outline"}>
+                                        {patient.isActive ? "Aktif" : "Tidak Aktif"}
                                     </Badge>
                                 </TableCell>
                             </TableRow>
